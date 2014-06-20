@@ -8,20 +8,12 @@ define(['dojo/_base/declare', 'apollo/propertytypes/_Base'],
 
             key:     'file',
             options: {
-                w: {
-                    type:    'int',
+                uploadDir: {
+                    type:    'path',
                     options: {
-                        'default':   100,
                         label:       'Thumb width',
-                        description: 'The default width for thumbnails rendered'
-                    }
-                },
-                h: {
-                    type:    'int',
-                    options: {
-                        'default':   0,
-                        label:       'Thumb height',
-                        description: 'The height for our thumbnails. 0 means scale proportionality.'
+                        description: 'The default width for thumbnails rendered',
+                        required:    true
                     }
                 }
             },
@@ -50,7 +42,7 @@ define(['dojo/_base/declare', 'apollo/propertytypes/_Base'],
 
             fromFormSubmissionValue: function (value, options, config) {
 
-                if(value && value.size > 0) {
+                if (value && value.size > 0) {
 
                     console.log('what to do?');
 
