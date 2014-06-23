@@ -1,0 +1,11 @@
+{
+    "properties": {
+
+        "uploadDir": {
+            "type":    "path",
+            "options": {
+                "label": "Upload Directory"
+            }
+        }
+    }
+}

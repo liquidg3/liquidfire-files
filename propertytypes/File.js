@@ -1,6 +1,10 @@
-define(['dojo/_base/declare', 'apollo/propertytypes/_Base'],
+define(['dojo/_base/declare',
+        'apollo/propertytypes/_Base',
+        'altair/plugins/node!path'],
 
-    function (declare, _Base) {
+    function (declare,
+              _Base,
+              pathUtil) {
 
 
         return declare([_Base], {
@@ -11,16 +15,10 @@ define(['dojo/_base/declare', 'apollo/propertytypes/_Base'],
                 uploadDir: {
                     type:    'path',
                     options: {
-                        label:       'Thumb width',
-                        description: 'The default width for thumbnails rendered',
-                        required:    true
+                        label:       'Upload Directory',
+                        description: 'Where should uploaded files be placed?'
                     }
                 }
-            },
-
-
-            toViewValue: function (value, options, config) {
-                return 'we rendered a thumb!!!!';
             },
 
 
@@ -33,19 +31,63 @@ define(['dojo/_base/declare', 'apollo/propertytypes/_Base'],
              * @returns {*}
              */
             toJsValue: function (value, options, config) {
-                return value;
+
+                var abs = this.parent.resolveUploadedFilePath(value);
+
+                return {
+                    absolute: abs,
+                    relative: this.parent.resolveUploadedFilePath(value, {absolute: false}),
+                    filename: pathUtil.basename(abs)
+                };
+            },
+
+            toHttpResponseValue: function (value, options, config) {
+
+                var v = this.toJsValue(value, options, config),
+                    host;
+
+                delete v.absolute;
+
+                //if we have a request, lets build a full uri for the image
+                if(options.request) {
+
+                    host    = options.request.header('host');
+                    v.uri   = host + '/' + v.relative;
+
+                } else {
+                    this.log(this + ' does not have a request in it\'s options.');
+                }
+
+                return v;
+
             },
 
             template: function (options) {
                 return 'liquidfire:Files/views/file';
             },
 
+            toDatabaseValue: function (value) {
+                return value;
+            },
+
             fromFormSubmissionValue: function (value, options, config) {
 
                 if (value && value.size > 0) {
 
-                    console.log('what to do?');
+                    return this.parent.forge('file/Mover').then(function (mover) {
 
+                        return mover.place(value.path);
+
+                    }.bind(this)).then(function (results) {
+
+                        return results.relative;
+
+                    });
+
+                }
+                //is there an old value
+                else if(config && config.old) {
+                    return config.old;
                 }
                 //if there is no image and it's not
                 else {
