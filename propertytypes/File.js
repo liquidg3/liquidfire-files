@@ -36,7 +36,8 @@ define(['dojo/_base/declare',
 
                 return {
                     absolute: abs,
-                    relative: this.parent.resolveUploadedFilePath(value, {absolute: false}),
+                    public: this.parent.resolveUploadedFilePath(value, { public: true, absolute: false }),
+                    relative: this.parent.resolveUploadedFilePath(value, { absolute: false }),
                     filename: pathUtil.basename(abs)
                 };
             },
