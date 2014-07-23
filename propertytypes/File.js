@@ -53,7 +53,7 @@ define(['dojo/_base/declare',
                 if(options.request) {
 
                     host    = options.request.header('host');
-                    v.uri   = host + '/' + v.relative;
+                    v.uri   = host + v.public;
 
                 } else {
                     this.log(this + ' does not have a request in it\'s options.');
