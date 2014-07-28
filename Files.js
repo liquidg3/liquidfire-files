@@ -29,7 +29,7 @@ define(['altair/facades/declare',
         onDidExecuteAlfredWebServer: function (e) {
 
             //only share publically if we have an upload uri set
-            if (this.get('publicUploadUri')) {
+            if (this.get('publicUploadUri') && this.get('uploadDir')) {
                 var server = e.get('server');
                 server.serveStatically(this.get('uploadDir'), this.get('publicUploadUri'));
             }
