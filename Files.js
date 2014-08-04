@@ -1,15 +1,17 @@
 define(['altair/facades/declare',
         'liquidfire/modules/apollo/mixins/_HasPropertyTypesMixin',
+        'altair/mixins/_AssertMixin',
         'apollo/_HasSchemaMixin',
         'lodash',
         'altair/plugins/node!path'
 ], function (declare,
              _HasPropertyTypesMixin,
+             _AssertMixin,
              _HasSchemaMixin,
              _,
              pathUtil) {
 
-    return declare([_HasPropertyTypesMixin, _HasSchemaMixin], {
+    return declare([_HasPropertyTypesMixin, _HasSchemaMixin, _AssertMixin], {
 
 
         startup: function (options) {
@@ -44,8 +46,15 @@ define(['altair/facades/declare',
          */
         resolveUploadedFilePath: function (file, options) {
 
+            this.assert(this.get('publicUploadUri'), 'You must set publicUploadDirectory on liquidfire:Files')
+            this.assert(this.get('uploadDir'), 'You must set uploadDir on liquidfire:Files')
+
             var path,
                 _options = options || {};
+
+            if(!_.isString(file)) {
+                return null;
+            }
 
             if(_options.public) {
                 path = pathUtil.join(this.get('publicUploadUri', null, options), file);
