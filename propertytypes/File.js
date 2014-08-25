@@ -1,6 +1,6 @@
 define(['dojo/_base/declare',
-        'apollo/propertytypes/_Base',
-        'altair/plugins/node!path'],
+    'apollo/propertytypes/_Base',
+    'altair/plugins/node!path'],
 
     function (declare,
               _Base,
@@ -53,7 +53,7 @@ define(['dojo/_base/declare',
                 if(options.request) {
 
                     host    = options.request.header('host');
-                    v.uri   = host + v.public;
+                    v.uri   = 'http://' + host + v.public; //@TODO proper protocol
 
                 } else {
                     this.log(this + ' does not have a request in it\'s options.');
@@ -77,9 +77,9 @@ define(['dojo/_base/declare',
 
                     return this.parent.forge('file/Mover').then(function (mover) {
 
-                        return mover.place(value.path);
+                            return mover.place(value.path);
 
-                    }.bind(this)).then(function (results) {
+                        }.bind(this)).then(function (results) {
 
                         return results.relative;
 
