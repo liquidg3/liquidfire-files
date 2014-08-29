@@ -50,10 +50,10 @@ define(['dojo/_base/declare',
                 delete v.absolute;
 
                 //if we have a request, lets build a full uri for the image
-                if(options.request) {
+                if (options.request) {
 
                     host    = options.request.header('host');
-                    v.uri   = 'http://' + host + v.public; //@TODO proper protocol
+                    v.uri   = 'http://' + host + v.public; //@TODO proper protocol?????? how???
 
                 } else {
                     this.log(this + ' does not have a request in it\'s options.');
