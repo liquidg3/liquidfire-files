@@ -86,11 +86,15 @@ define(['dojo/_base/declare',
                     });
 
                 }
+                //was submitted as is
+                else if (value && value.relative) {
+                    return value.relative;
+                }
                 //is there an old value
                 else if(config && config.old) {
                     return config.old;
                 }
-                //if there is no image and it's not
+                //if there is no file and it's not
                 else {
                     return null;
                 }
