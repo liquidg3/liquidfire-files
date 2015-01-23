@@ -3,15 +3,42 @@ define(['altair/facades/declare',
         'altair/plugins/node!fs',
         'altair/plugins/node!path',
         'altair/plugins/node!tmp',
+        'altair/plugins/node!os',
         'altair/plugins/node!mkdirp'
 ], function (declare,
              _DeferredMixin,
              fs,
              pathUtil,
              tmp,
+             os,
              mkdirp) {
 
     return declare([_DeferredMixin], {
+
+        /**
+         * Save a base64 string as a file with the specified extension
+         *
+         * @param extension
+         * @param options
+         */
+        saveBase64: function (data, extension, options) {
+
+            var buffer = new Buffer(data, 'base64');
+
+            return this.generateUniqueName(os.tmpdir(), extension).then(function (path) {
+
+                return this.all({
+                    file: this.promise(fs, 'writeFile', path, buffer),
+                    path: path
+                });
+
+            }.bind(this)).then(function (results) {
+
+                return this.place(results.path, options);
+
+            }.bind(this));
+
+        },
 
         /**
          * Will place a file in the designated uploadsDir on this.parent
@@ -38,6 +65,8 @@ define(['altair/facades/declare',
             }.bind(this)).then(function (path) {
 
                 var is, os, dfd = new this.Deferred();
+
+
 
                 is = fs.createReadStream(from);
                 os = fs.createWriteStream(path);

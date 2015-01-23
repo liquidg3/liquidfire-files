@@ -36,10 +36,18 @@ define(['altair/facades/declare',
                 server.serveStatically(this.get('uploadDir'), this.get('publicUploadUri'));
             }
 
+            if (!this.get('fileHost')) {
+
+                var host = 'http://' + e.get('app').options.domain + ':' + e.get('app').options.port;
+                this.set('fileHost', host);
+
+            }
+
         },
 
         /**
-         * Helps you find the path to uploaded files (or their publicy accessible path)
+         * Helps you find the path to uploaded files (or their publicy accessible path if options { public: true } )
+         *
          * @param file
          * @param options
          * @returns {*}
@@ -56,10 +64,49 @@ define(['altair/facades/declare',
                 return null;
             }
 
+
+            //they want a publically accessible uri
             if(_options.public) {
-                path = pathUtil.join(this.get('publicUploadUri', null, options), file);
+
+                _options.absolute = false;
+
+                //my absolute best guess on how to handle a path relative to the app that
+                //is also publically available
+                if (file[0] === '.') {
+
+                    path = this.nexus('Altair').resolvePath(file);
+
+                    //this comes back as /public/_uploads by default
+                    var pub = this.get('publicUploadUri', null),
+                        parts = pub.split('/'),
+                        publicFolderName = parts[0] || parts[1]; //first non-empty folder name
+
+                    //split by top level public folder (assumed public by default) and add onto it anything in the last part
+                    path = '/' + publicFolderName + path.split(publicFolderName).pop(); //this should leave us with whatever is past the public facing side
+
+
+                } else {
+
+                    path = pathUtil.join(this.get('publicUploadUri', null, options), file);
+
+                }
+
+                path = this.get('fileHost') + path;
+
             } else {
-                path = pathUtil.join(this.get('uploadDir', null, options), file);
+
+                //if file starts with a . then lets look relative to the current app vs the upload dir
+                if (file[0] === '.') {
+
+                    path = (_options.absolute) ? this.nexus('Altair').resolvePath(file) : file;
+
+                } else {
+
+                    path = pathUtil.join(this.get('uploadDir', null, options), file);
+
+                }
+
+
             }
 
             return path;

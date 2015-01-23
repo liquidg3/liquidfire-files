@@ -37,29 +37,26 @@ define(['dojo/_base/declare',
                 return {
                     absolute: abs,
                     public: this.parent.resolveUploadedFilePath(value, { public: true, absolute: false }),
-                    relative: this.parent.resolveUploadedFilePath(value, { absolute: false }),
+                    relative: value,
                     filename: pathUtil.basename(abs)
                 };
             },
 
             toHttpResponseValue: function (value, options, config) {
 
-                var v = this.toJsValue(value, options, config),
-                    host;
+                var v = this.toJsValue(value, options, config);
 
+                //don't expose the full path
                 delete v.absolute;
 
-                //if we have a request, lets build a full uri for the image
-                if (options.request) {
-
-                    host    = options.request.header('host');
-                    v.uri   = 'http://' + host + v.public; //@TODO proper protocol?????? how???
-
-                } else {
-                    this.log(this + ' does not have a request in it\'s options.');
-                }
-
                 return v;
+
+
+            },
+
+            toSocketValue: function (value, options, config) {
+
+                return this.toHttpResponseValue(value, options. config);
 
             },
 
@@ -68,6 +65,11 @@ define(['dojo/_base/declare',
             },
 
             toDatabaseValue: function (value) {
+
+                if (value && value.relative) {
+                    return value.relative;
+                }
+
                 return value;
             },
 
@@ -77,9 +79,9 @@ define(['dojo/_base/declare',
 
                     return this.parent.forge('file/Mover').then(function (mover) {
 
-                            return mover.place(value.path);
+                        return mover.place(value.path);
 
-                        }.bind(this)).then(function (results) {
+                    }.bind(this)).then(function (results) {
 
                         return results.relative;
 
