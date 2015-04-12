@@ -32,6 +32,10 @@ define(['dojo/_base/declare',
              */
             toJsValue: function (value, options, config) {
 
+                if (_.isObject(value) && value.relative) {
+                    value = value.relative;
+                }
+
                 var abs = this.parent.resolveUploadedFilePath(value);
 
                 return {
@@ -56,7 +60,7 @@ define(['dojo/_base/declare',
 
             toSocketValue: function (value, options, config) {
 
-                return this.toHttpResponseValue(value, options. config);
+                return this.toHttpResponseValue(value, options, config);
 
             },
 
