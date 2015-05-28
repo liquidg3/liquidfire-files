@@ -38,7 +38,14 @@ define(['altair/facades/declare',
 
             if (!this.get('fileHost')) {
 
-                var host = 'http://' + e.get('app').options.domain + ':' + e.get('app').options.port;
+                var port        = e.get('app').options.sslPort || e.get('app').options.port,
+                    protocol    = e.get('app').options.sslPort ? 'https' : 'http',
+                    host        = protocol + '://' + e.get('app').options.domain;
+
+                if (port !== 80 && port !== 443) {
+                    host += ':' + port;
+                }
+
                 this.set('fileHost', host);
 
             }
