@@ -66,8 +66,6 @@ define(['altair/facades/declare',
 
                 var is, os, dfd = new this.Deferred();
 
-
-
                 is = fs.createReadStream(from);
                 os = fs.createWriteStream(path);
 
@@ -105,7 +103,10 @@ define(['altair/facades/declare',
 
         generateUniqueName: function (at, extension) {
 
-            return this.promise(tmp, 'tmpName', { postfix: extension, dir: at, prefix: '' });
+            var now = new Date(),
+                path = pathUtil.join.apply(pathUtil, [at, now.getFullYear().toString(), now.getMonth().toString(), now.getDate().toString()]);
+
+            return this.promise(tmp, 'tmpName', { postfix: extension, dir: path, prefix: '' });
 
         }
 
