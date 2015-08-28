@@ -17,19 +17,29 @@ define(['altair/facades/declare',
 
         /**
          * Save a base64 string as a file with the specified extension
-         *
-         * @param extension
-         * @param options
+         * @param data - Base64 encoded binary image data.
+         * @param extension - extension starting with a '.', best to use pathUtil.extname
+         * @param options - stub for now
          */
         saveBase64: function (data, extension, options) {
-
-            var buffer = new Buffer(data, 'base64');
 
             return this.generateUniqueName(os.tmpdir(), extension).then(function (path) {
 
                 return this.all({
-                    file: this.promise(fs, 'writeFile', path, buffer),
-                    path: path
+                    path: path,
+                    mkdirp: this.promise(mkdirp, pathUtil.dirname(path)).then(function () {
+                        return path;
+                    })
+                });
+
+
+            }.bind(this)).then(function (results) {
+
+                var buffer = new Buffer(data, 'base64');
+
+                return this.all({
+                    file: this.promise(fs, 'writeFile', results.path, buffer),
+                    path: results.path
                 });
 
             }.bind(this)).then(function (results) {
@@ -105,6 +115,12 @@ define(['altair/facades/declare',
 
             var now = new Date(),
                 path = pathUtil.join.apply(pathUtil, [at, now.getFullYear().toString(), now.getMonth().toString(), now.getDate().toString()]);
+
+
+            //make sure extension starts with a '.'
+            if (extension[0] !== '.') {
+                extension = '.' + extension;
+            }
 
             return this.promise(tmp, 'tmpName', { postfix: extension, dir: path, prefix: '' });
 

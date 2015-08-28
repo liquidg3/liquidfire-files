@@ -63,6 +63,7 @@ define(['altair/facades/declare',
 
             this.assert(this.get('publicUploadUri'), 'You must set publicUploadDirectory on liquidfire:Files')
             this.assert(this.get('uploadDir'), 'You must set uploadDir on liquidfire:Files')
+            this.assert(this.get('fileHost'), 'You must set fileHost (http://domain.com) on liquidfire:Files')
 
             var path,
                 _options = options || {};
