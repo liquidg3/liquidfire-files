@@ -74,7 +74,6 @@ define(['altair/facades/declare',
                 return null;
             }
 
-
             //they want a publically accessible uri
             if(_options.public) {
 
