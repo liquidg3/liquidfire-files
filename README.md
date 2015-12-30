@@ -12,7 +12,8 @@ Make sure you have the following in your `modules.json`.
 ```json
 
 "liquidfire:Files": {
-    "uploadDir": "../uploads"
+    "uploadDir":    "../uploads",
+    "fileHost":     "https://filehost.com"
 },
 
 ```

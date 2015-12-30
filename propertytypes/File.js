@@ -1,13 +1,15 @@
 define(['dojo/_base/declare',
-    'apollo/propertytypes/_Base',
-    'altair/plugins/node!path'],
+        'apollo/propertytypes/_Base',
+        'altair/mixins/_AssertMixin',
+        'altair/plugins/node!path'],
 
     function (declare,
               _Base,
+              _AssertMixin,
               pathUtil) {
 
 
-        return declare([_Base], {
+        return declare([_Base, _AssertMixin], {
 
 
             key:     'file',
@@ -79,7 +81,22 @@ define(['dojo/_base/declare',
 
             fromFormSubmissionValue: function (value, options, config) {
 
-                if (value && value.size > 0) {
+                //base64 upload?
+                if (value && value.base64) {
+
+                    this.assert(value.name, 'You must supply a name with your base64 encoded image.');
+
+                    var extension = pathUtil.extname(value.name);
+
+                    return this.parent.forge('file/Mover').then(function (mover) {
+                        return mover.saveBase64(value.base64, extension)
+                    }).then(function (results) {
+                        return results.relative;
+                    });
+
+                }
+                //standard HTTP POST
+                else if (value && value.size > 0) {
 
                     return this.parent.forge('file/Mover').then(function (mover) {
 
