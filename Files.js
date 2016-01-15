@@ -85,10 +85,11 @@ define(['altair/facades/declare',
 
                     path = this.nexus('Altair').resolvePath(file);
 
+
                     //this comes back as /public/_uploads by default
-                    var pub = this.get('publicUploadUri', null),
-                        parts = pub.split('/'),
-                        publicFolderName = parts[0] || parts[1]; //first non-empty folder name
+                    var pub                 = this.get('publicUploadUri', null),
+                        parts               = pub.split('/'),
+                        publicFolderName    = parts[0] || parts[1]; //first non-empty folder name
 
                     //split by top level public folder (assumed public by default) and add onto it anything in the last part
                     path = '/' + publicFolderName + path.split(publicFolderName).pop(); //this should leave us with whatever is past the public facing side
