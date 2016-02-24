@@ -84,9 +84,11 @@ define(['dojo/_base/declare',
                 //base64 upload?
                 if (value && value.base64) {
 
-                    this.assert(value.name, 'You must supply a name with your base64 encoded image.');
+                    var name = value.name || value.filename;
 
-                    var extension = pathUtil.extname(value.name);
+                    this.assert(name, 'You must supply a name with your base64 encoded image.');
+
+                    var extension = pathUtil.extname(name);
 
                     return this.parent.forge('file/Mover').then(function (mover) {
                         return mover.saveBase64(value.base64, extension)
