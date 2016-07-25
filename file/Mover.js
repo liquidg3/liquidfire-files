@@ -103,7 +103,7 @@ define(['altair/facades/declare',
                     absolute: path,
                     relative: relative,
                     uploadDir: uploadDir,
-                    public:    this.parent.resolveUploadedFilePath(pathUtil.basename(path), { public: true, absolute: false }),
+                    public:    this.parent.resolveUploadedFilePath(relative, { public: true, absolute: false }),
                     filename: pathUtil.basename(path)
                 }
 
